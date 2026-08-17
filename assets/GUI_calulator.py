@@ -150,6 +150,8 @@ def cal():
     exit_button = Button(root, text='Quit', fg='white', bg='black', command=root.destroy, height=1, width=7)
     exit_button.grid(row=7, column=2, columnspan=2, pady=5)
 
+
+
     # Trigonometric functions use degrees for input and output.
     sin_button = num_button(text='sin', command=lambda: get_function(entry, 'sin'))
     sin_button.grid(row=8, column=0, pady=5)

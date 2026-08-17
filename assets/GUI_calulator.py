@@ -1,11 +1,9 @@
 import math
-import tkinter as tk, END, Entry, N, E, S, W, Button
+import tkinter as tk
+from tkinter import END, Entry, N, E, S, W, Button
 from tkinter import font
 from tkinter import Label
 from functools import partial
-
-
-
 
 
 
@@ -19,13 +17,48 @@ def get_function(entry, func_name):
 
 def backspace(entry):
     input_len = len(entry.get())
-    entry.delete(input_len - 1)
+    if input_len:
+        entry.delete(input_len - 1, END)
 
 
 def clear(entry):
     entry.delete(0, END)
 
-    
+
+def evaluate(entry):
+    """Evaluate a calculator expression without exposing Python builtins."""
+    functions = {
+        "sin": lambda value: math.sin(math.radians(value)),
+        "cos": lambda value: math.cos(math.radians(value)),
+        "tan": lambda value: math.tan(math.radians(value)),
+        "asin": lambda value: math.degrees(math.asin(value)),
+        "acos": lambda value: math.degrees(math.acos(value)),
+        "atan": lambda value: math.degrees(math.atan(value)),
+        "sqrt": math.sqrt,
+        "pi": math.pi,
+    }
+    try:
+        expression = entry.get().replace("^", "**")
+        result = eval(expression, {"__builtins__": {}}, functions)
+    except (SyntaxError, TypeError, ValueError, ZeroDivisionError, NameError, OverflowError):
+        entry.delete(0, END)
+        entry.insert(0, "Error")
+        return
+
+    entry.delete(0, END)
+    entry.insert(0, str(result))
+
+
+def popupmsg(message):
+    popup = tk.Tk()
+    popup.resizable(0, 0)
+    popup.geometry("180x100")
+    popup.title("Alert")
+    label = Label(popup, text=message)
+    label.pack(side="top", fill="x", pady=10)
+    B1 = Button(popup, text="Okay", bg="#DDDDDD", command=popup.destroy)
+    B1.pack()
+
 
 def cal():
     root = tk.Tk()
@@ -48,8 +81,7 @@ def cal():
     cal_button = partial(Button, root, fg=text_fg, bg=cal_button_bg, 
                          padx=10, pady=3, activebackground=button_active_bg)
 
-    button7 = num_button(text='7', bg=num_button_bg,
-                         padx=10, pady=3, command=lambda: get_input(entry, '7'))
+    button7 = num_button(text='7', command=lambda: get_input(entry, '7'))
     button7.grid(row=2, column=0, pady=5)
 
     button8 = num_button(text='8', command=lambda: get_input(entry, '8'))
@@ -85,12 +117,60 @@ def cal():
     button12 = cal_button(text='*', command=lambda: get_input(entry, '*'))
     button12.grid(row=4, column=3, pady=5)
 
+    button0 = num_button(text='0', command=lambda: get_input(entry, '0'))
+    button0.grid(row=5, column=0, pady=5)
 
+    decimal = num_button(text='.', command=lambda: get_input(entry, '.'))
+    decimal.grid(row=5, column=1, pady=5)
 
-    def quit():
-        exit['command'] = root.quit()
-    exit = Button(root, text='Quit', fg='white', bg='black', command=quit, height=1, width=7)
-    exit.grid(row=8, column=1)
+    equals = cal_button(text='=', command=lambda: evaluate(entry))
+    equals.grid(row=5, column=2, pady=5)
+
+    divide = cal_button(text='/', command=lambda: get_input(entry, '/'))
+    divide.grid(row=5, column=3, pady=5)
+
+    left_parenthesis = num_button(text='(', command=lambda: get_input(entry, '('))
+    left_parenthesis.grid(row=6, column=0, pady=5)
+
+    right_parenthesis = num_button(text=')', command=lambda: get_input(entry, ')'))
+    right_parenthesis.grid(row=6, column=1, pady=5)
+
+    power = cal_button(text='^', command=lambda: get_input(entry, '^'))
+    power.grid(row=6, column=2, pady=5)
+
+    pi = num_button(text='π', command=lambda: get_input(entry, 'pi'))
+    pi.grid(row=6, column=3, pady=5)
+
+    clear_button = Button(root, text='Clear', command=lambda: clear(entry), height=1, width=7)
+    clear_button.grid(row=7, column=0, pady=5)
+
+    backspace_button = Button(root, text='⌫', command=lambda: backspace(entry), height=1, width=7)
+    backspace_button.grid(row=7, column=1, pady=5)
+
+    exit_button = Button(root, text='Quit', fg='white', bg='black', command=root.destroy, height=1, width=7)
+    exit_button.grid(row=7, column=2, columnspan=2, pady=5)
+
+    # Trigonometric functions use degrees for input and output.
+    sin_button = num_button(text='sin', command=lambda: get_function(entry, 'sin'))
+    sin_button.grid(row=8, column=0, pady=5)
+
+    cos_button = num_button(text='cos', command=lambda: get_function(entry, 'cos'))
+    cos_button.grid(row=8, column=1, pady=5)
+
+    tan_button = num_button(text='tan', command=lambda: get_function(entry, 'tan'))
+    tan_button.grid(row=8, column=2, pady=5)
+
+    sqrt_button = num_button(text='sqrt', command=lambda: get_function(entry, 'sqrt'))
+    sqrt_button.grid(row=8, column=3, pady=5)
+
+    asin_button = num_button(text='asin', command=lambda: get_function(entry, 'asin'))
+    asin_button.grid(row=9, column=0, pady=5)
+
+    acos_button = num_button(text='acos', command=lambda: get_function(entry, 'acos'))
+    acos_button.grid(row=9, column=1, pady=5)
+
+    atan_button = num_button(text='atan', command=lambda: get_function(entry, 'atan'))
+    atan_button.grid(row=9, column=2, pady=5)
 
 
     root.mainloop()

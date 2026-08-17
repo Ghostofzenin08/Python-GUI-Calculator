@@ -152,27 +152,10 @@ def cal():
 
 
 
-    # Trigonometric functions use degrees for input and output.
-    sin_button = num_button(text='sin', command=lambda: get_function(entry, 'sin'))
-    sin_button.grid(row=8, column=0, pady=5)
-
-    cos_button = num_button(text='cos', command=lambda: get_function(entry, 'cos'))
-    cos_button.grid(row=8, column=1, pady=5)
-
-    tan_button = num_button(text='tan', command=lambda: get_function(entry, 'tan'))
-    tan_button.grid(row=8, column=2, pady=5)
-
-    sqrt_button = num_button(text='sqrt', command=lambda: get_function(entry, 'sqrt'))
-    sqrt_button.grid(row=8, column=3, pady=5)
-
-    asin_button = num_button(text='asin', command=lambda: get_function(entry, 'asin'))
-    asin_button.grid(row=9, column=0, pady=5)
-
-    acos_button = num_button(text='acos', command=lambda: get_function(entry, 'acos'))
-    acos_button.grid(row=9, column=1, pady=5)
-
-    atan_button = num_button(text='atan', command=lambda: get_function(entry, 'atan'))
-    atan_button.grid(row=9, column=2, pady=5)
+    def quit():
+        exit['command'] = root.quit()
+    exit = Button(root, text='Quit', fg='white', bg='black', command=quit, height=1, width=7)
+    exit.grid(row=8, column=1)
 
 
     root.mainloop()
